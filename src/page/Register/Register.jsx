@@ -1,19 +1,58 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ImSpinner3 } from "react-icons/im";
-
+import useAuth from "../../hook/useAuth";
+import { toast } from "react-hot-toast";
+import { updateProfile } from "firebase/auth";
+import auth from "../../config/firebase.config";
 
 const Register = () => {
 
-    const [loading] = useState()
+    const { loading, createUser } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
-    const handleRegister = () => {
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        const form = new FormData(e.currentTarget);
+        const email = form.get('email');
+        const password = form.get('password');
+        const photoUrl = form.get('photoUrl');
+        const name = form.get('name');
+        // console.log(email, password, name, photoUrl);
 
+        // password validation using regex
+        if (!/^.{6,}$/.test(password)) {
+            toast.error('Password must have 6 characters or more');
+            return;
+        }
+        else if (!/(?=.*[A-Z])/.test(password)) {
+            toast.error('Password must have a capital letter');
+            return;
+        }
+        else if (!/[!@#$%^&*()_+]/.test(password)) {
+            toast.error('Password must have a special character');
+            return;
+        }
+
+        //Register user with email and password
+        const toastId = toast.loading('Registration on process..');
+        try {
+            await createUser(email, password)
+            // update user profile
+            await updateProfile(auth.currentUser, {
+                displayName: name, photoURL: photoUrl
+            })
+                .then(() => { })
+                .catch(error => {
+                    console.log(error.message);
+                })
+            toast.success('Registration successful', { id: toastId });
+            navigate('/')
+        } catch (err) {
+            toast.error(err.message, { id: toastId });
+        }
     }
-
-
-
 
     return (
         <div style={{
@@ -26,7 +65,6 @@ const Register = () => {
             justifyContent: 'center',
             height: '100%',
         }}
-
         >
             <div className="hero my-2 lg:mt-10" data-aos="fade-up">
                 <div className="px-24 py-4 max-w-[752px] shadow-2xl bg-transparent backdrop-blur-sm rounded-lg">
@@ -94,6 +132,6 @@ const Register = () => {
             </div>
         </div>
     );
-};
+}
 
 export default Register;

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import myCreatedRoute from './router/Route';
 import AuthProvider from './providers/AuthProvider';
+import { Toaster } from 'react-hot-toast';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -13,5 +14,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <RouterProvider router={myCreatedRoute} />
     </AuthProvider>
+    <Toaster />
   </React.StrictMode>,
 )

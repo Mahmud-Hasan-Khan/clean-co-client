@@ -1,6 +1,27 @@
 import { Link, NavLink } from "react-router-dom";
+import useAuth from "../hook/useAuth";
 
 const navbar = () => {
+
+    const { user, logOut } = useAuth();
+
+    const handleLogout = () => {
+        logOut()
+            .then(() => {
+                // Swal.fire({
+                //     position: 'center',
+                //     icon: 'success',
+                //     title: 'Logout Successful!',
+                //     showConfirmButton: false,
+                //     timer: 1500
+                // })
+                // navigate("/")
+            })
+            .catch((error) => {
+                console.log(error.message);
+            })
+    }
+
     return (
         <>
             <div className="w-full navbar shadow-md">
@@ -14,30 +35,45 @@ const navbar = () => {
                 </div>
                 <div className="flex-none space-x-4 hidden lg:block">
 
-                    {/* Navbar menu content here */}
-                    <NavLink to='/about' className={({ isActive, isPending }) =>
-                        isActive
-                            ? "border-black border-b-2 "
-                            : isPending
-                                ? "pending"
-                                : ""
-                    } >About</NavLink>
+                    <div className="flex items-center gap-4 justify-center">
+                        {/* Navbar menu content here */}
+                        <NavLink to='/about' className={({ isActive, isPending }) =>
+                            isActive
+                                ? "border-black border-b-2 "
+                                : isPending
+                                    ? "pending"
+                                    : ""
+                        } >About</NavLink>
 
-                    <NavLink to='/contact' className={({ isActive, isPending }) =>
-                        isActive
-                            ? "border-black border-b-2 "
-                            : isPending
-                                ? "pending"
-                                : ""
-                    } >Contact</NavLink>
+                        <NavLink to='/contact' className={({ isActive, isPending }) =>
+                            isActive
+                                ? "border-black border-b-2 "
+                                : isPending
+                                    ? "pending"
+                                    : ""
+                        } >Contact</NavLink>
 
-                    <NavLink to='/login' className={({ isActive, isPending }) =>
-                        isActive
-                            ? "border-black border-b-2 "
-                            : isPending
-                                ? "pending"
-                                : ""
-                    } >Login</NavLink>
+                        <div className="flex justify-center items-center gap-3">
+                            {
+                                user ?
+                                    <>
+                                        <p className='text-sm lg:text-base'>{user?.displayName}</p>
+                                        <img
+                                            className='rounded-full'
+                                            src={user?.photoURL}
+                                            alt='profile'
+                                            height='34'
+                                            width='34'
+                                        />
+                                        <Link onClick={handleLogout} className='bg-[#00AEEF] hover:bg-[#0395ff] px-3 py-1.5 rounded-full text-white font-medium hover:shadow-md' to="/login">Logout</Link>
+                                    </>
+                                    :
+                                    <>
+                                        <Link className='bg-[#00AEEF] hover:bg-[#0395ff] px-3 py-1.5 rounded-full text-white font-medium hover:shadow-md' to="/login">Login</Link>
+                                    </>
+                            }
+                        </div>
+                    </div>
 
                 </div>
             </div>
