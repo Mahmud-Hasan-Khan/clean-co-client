@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .regPageInputLabel {
+        @apply text-xl font-semibold text-[#ad5cb4]
+    }
+}
